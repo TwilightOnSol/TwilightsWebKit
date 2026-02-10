@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CoinGecko Marquee</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+      }
+    </style>
+    <script src="https://widgets.coingecko.com/gecko-coin-price-marquee-widget.js"></script>
+  </head>
+  <body>
+    <gecko-coin-price-marquee-widget
+      locale="en"
+      dark-mode="true"
+      transparent-background="true"
+      outlined="true"
+      coin-ids="bitcoin,ethereum,solana"
+      initial-currency="usd">
+    </gecko-coin-price-marquee-widget>
+  </body>
+</html>

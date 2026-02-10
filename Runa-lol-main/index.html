@@ -1,0 +1,204 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runa Smurf Co. - CS2 CHAOS GAMBLE</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.6/babel.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap');
+    body {
+      background-image: url('runa.png');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+    }
+    .glitch {
+      position: relative;
+      animation: glitch 0.5s infinite;
+      text-shadow: 2px 2px #ff4500, -2px -2px #ff8c00;
+    }
+    .crazy-spin {
+      animation: spin 2s infinite linear;
+    }
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-5px, 5px); }
+      40% { transform: translate(5px, -5px); }
+      60% { transform: translate(-3px, 3px); }
+      80% { transform: translate(3px, -3px); }
+      100% { transform: translate(0); }
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="bg-black text-orange-400 font-['Orbitron']">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    function App() {
+      const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+      const [formStatus, setFormStatus] = useState('');
+
+      const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        setFormStatus('YOLO! Your bet’s in the metaverse casino!');
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setFormStatus(''), 3000);
+      };
+
+      return (
+        <div>
+          {/* Navbar */}
+          <nav class="bg-black bg-opacity-90 p-4 fixed w-full z-10 border-b-8 border-orange-500">
+            <div class="container mx-auto flex justify-between items-center">
+              <h1 class="text-4xl font-bold text-orange-400 glitch font-['Press_Start_2P']">RUNA SMURF CO.</h1>
+              <ul class="flex space-x-6 text-lg">
+                <li><a href="#home" class="hover:text-orange-300 transition glitch">HOME</a></li>
+                <li><a href="#services" class="hover:text-orange-300 transition glitch">WILD SERVICES</a></li>
+                <li><a href="#about" class="hover:text-orange-300 transition glitch">WHO’S THIS NUT?</a></li>
+                <li><a href="#contact" class="hover:text-orange-300 transition glitch">SHOUT AT US</a></li>
+              </ul>
+            </div>
+          </nav>
+
+          {/* Hero Section */}
+          <section id="home" class="min-h-screen flex items-center justify-center">
+            <div class="text-center p-8 bg-black bg-opacity-80 rounded-lg border-8 border-orange-500">
+              <h2 class="text-6xl font-bold mb-4 glitch font-['Press_Start_2P']">RUNA SMURF CO.</h2>
+              <p class="text-2xl mb-6 font-['Press_Start_2P']">CS2 CASE FARMING IN THE METAVERSE! BET BIG, WIN EPIC, GO NUTS!</p>
+              <a href="#services" class="bg-orange-500 hover:bg-orange-600 text-black px-8 py-4 rounded-full transition font-bold text-lg crazy-spin inline-block">ROLL THE DICE!</a>
+            </div>
+          </section>
+
+          {/* Services Section */}
+          <section id="services" class="py-20 container mx-auto px-4">
+            <h2 class="text-5xl font-bold text-center mb-12 glitch font-['Press_Start_2P']">INSANE METAVERSE HUSTLES</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div class="bg-black bg-opacity-80 p-6 rounded-lg shadow-lg hover:shadow-orange-500/70 transition border-4 border-orange-400">
+                <h3 class="text-3xl font-semibold mb-4 glitch">CRAZY CASE JACKPOT</h3>
+                <p>We’re farming CS2 cases like lunatics in a digital casino! Snag legendary loot with our glitchy, high-stakes bot swarm!</p>
+              </div>
+              <div class="bg-black bg-opacity-80 p-6 rounded-lg shadow-lg hover:shadow-orange-500/70 transition border-4 border-orange-400">
+                <h3 class="text-3xl font-semibold mb-4 glitch">SMURF PARTY MODE</h3>
+                <p>Grab prime or non-prime smurf accounts to troll low ranks or vibe like a metaverse gremlin! YOLO!</p>
+              </div>
+              <div class="bg-black bg-opacity-80 p-6 rounded-lg shadow-lg hover:shadow-orange-500/70 transition border-4 border-orange-400">
+                <h3 class="text-3xl font-semibold mb-4 glitch">WACKO CUSTOM LOOT</h3>
+                <p>Custom CS2 gear forged in the metaverse furnace—ranked accounts, rare skins, whatever your chaotic heart desires!</p>
+              </div>
+            </div>
+          </section>
+
+          {/* About Section */}
+          <section id="about" class="py-20 bg-black bg-opacity-90">
+            <div class="container mx-auto px-4 text-center">
+              <h2 class="text-5xl font-bold mb-8 glitch font-['Press_Start_2P']">WHO’S RUNA SMURF CO.?</h2>
+              <p class="text-xl max-w-2xl mx-auto font-['Orbitron']">We’re the wildest CS2 crew in the metaverse, led by the spirit of Runa Yomozuki! Gambling on cases, smurfing with swagger, and breaking all the rules with a manic grin. Join our unhinged gang and crank your Counter-Strike 2 game to 11!</p>
+            </div>
+          </section>
+
+          {/* Contact Section */}
+          <section id="contact" class="py-20 container mx-auto px-4">
+            <h2 class="text-5xl font-bold text-center mb-12 glitch font-['Press_Start_2P']">SCREAM INTO THE VOID</h2>
+            <div class="max-w-lg mx-auto">
+              <form onSubmit={handleSubmit} class="space-y-4">
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="YOUR GAMER ALIAS"
+                  class="w-full p-4 bg-black bg-opacity-80 rounded-lg focus:outline-none focus:ring-4 focus:ring-orange-500 text-orange-400 border-4 border-orange-400 font-['Press_Start_2P']"
+                  required
+                />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="YOUR NEON EMAIL"
+                  class="w-full p-4 bg-black bg-opacity-80 rounded-lg focus:outline-none focus:ring-4 focus:ring-orange-500 text-orange-400 border-4 border-orange-400 font-['Press_Start_2P']"
+                  required
+                />
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  placeholder="YOUR MANIC RANT"
+                  class="w-full p-4 bg-black bg-opacity-80 rounded-lg focus:outline-none focus:ring-4 focus:ring-orange-500 text-orange-400 border-4 border-orange-400 font-['Press_Start_2P']"
+                  rows="5"
+                  required
+                ></textarea>
+                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-black px-8 py-4 rounded-full w-full transition font-bold text-lg font-['Press_Start_2P'] crazy-spin">
+                  FLING IT TO THE COSMOS!
+                </button>
+              </form>
+              {formStatus && <p class="text-orange-300 text-center mt-4 font-['Press_Start_2P'] glitch">{formStatus}</p>}
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer class="bg-black bg-opacity-90 py-6 text-center border-t-8 border-orange-500">
+            <p class="font-['Press_Start_2P'] text-orange-400 glitch">© 2025 RUNA SMURF CO. - TOTAL METAVERSE MADNESS!</p>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
